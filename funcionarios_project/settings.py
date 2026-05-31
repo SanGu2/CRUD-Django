@@ -78,8 +78,13 @@ WSGI_APPLICATION = 'funcionarios_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django_mongodb',
+        'NAME': 'funcionarios_db',
+        'HOST': 'mongodb+srv://localhost:bankofdates@cluster0.neeqr7a.mongodb.net/?appName=Cluster0',
+        'OPTIONS': {
+            'retryWrites': True,
+            'w': 'majority',
+        }
     }
 }
 

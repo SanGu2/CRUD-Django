@@ -1,5 +1,8 @@
+# Projeto: CRUD de Funcionários
+# Integrantes: Augusto Lothar, Gustavo Pereira, Julio Lima, Rodrigo Córdova
+# Data: 31/05/2026
 
-# Create your views here.
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from datetime import datetime

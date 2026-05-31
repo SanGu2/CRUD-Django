@@ -1,0 +1,29 @@
+<!-- Integrantes: Augusto Lothar Barros Coutinho, Gustavo Pereira dos Santos, Julio Lima da Silva, Rodrigo Marques de Cordova -->
+<!DOCTYPE html>
+<html>
+<head><title>Funcionários</title></head>
+<body>
+  <h1>Cadastro de Funcionários</h1>
+  <a href="{% url 'employee_create' %}"> Novo Funcionário</a>
+  <table border="1" cellpadding="8" style="margin-top:15px;">
+    <tr><th>Nome</th><th>Cargo</th><th>Salário</th><th>Admissão</th><th>Ações</th></tr>
+    {% for emp in funcionario %}
+    <tr>
+      <td>{{ emp.nome }}</td>
+      <td>{{ emp.cargo }}</td>
+      <td>R$ {{ emp.salario|floatformat:2 }}</td>
+      <td>{{ emp.data_admissao|date:"d/m/Y" }}</td>
+      <td>
+        <a href="{% url 'funcionario_update' emp.id %}"> Editar</a> |
+        <form action="{% url 'funcionario_delete' emp.id %}" method="POST" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('Tem certeza?')"> Remover</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Nenhum funcionário cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

@@ -4,18 +4,18 @@
 <head><title>Funcionários</title></head>
 <body>
   <h1>Cadastro de Funcionários</h1>
-  <a href="{% url 'employee_create' %}"> Novo Funcionário</a>
+  <a href="{% url 'adicionar_funcionario' %}"> Novo Funcionário</a>
   <table border="1" cellpadding="8" style="margin-top:15px;">
     <tr><th>Nome</th><th>Cargo</th><th>Salário</th><th>Admissão</th><th>Ações</th></tr>
-    {% for emp in funcionario %}
+    {% for emp in funcionarios %}
     <tr>
       <td>{{ emp.nome }}</td>
       <td>{{ emp.cargo }}</td>
       <td>R$ {{ emp.salario|floatformat:2 }}</td>
       <td>{{ emp.data_admissao|date:"d/m/Y" }}</td>
       <td>
-        <a href="{% url 'funcionario_update' emp.id %}"> Editar</a> |
-        <form action="{% url 'funcionario_delete' emp.id %}" method="POST" style="display:inline;">
+        <a href="{% url 'atualizar_funcionario' emp.id|slugify %}"> Editar</a> |
+        <form action="{% url 'remover_funcionario' emp.id|slugify %}" method="POST" style="display:inline;">
           {% csrf_token %}
           <button type="submit" onclick="return confirm('Tem certeza?')"> Remover</button>
         </form>

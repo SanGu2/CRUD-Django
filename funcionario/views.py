@@ -7,12 +7,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from datetime import datetime
 from .models import Funcionario
+from mongoengine.errors import DoesNotExist, InvalidQueryError
 
-def employee_list(request):
-    funcionario = Funcionario.objects.all()
-    return render(request, 'funcionario/list.html', {'funcionario': funcionario})
+def listar_funcionarios(request):
+    funcionarios = Funcionario.objects.all()
+    return render(request, 'funcionario/list.html', {'funcionarios': funcionarios})
 
-def employee_create(request):
+def adicionar_funcionario(request):
     if request.method == 'POST':
         try:
             salario = float(request.POST.get('salario'))
@@ -24,26 +25,42 @@ def employee_create(request):
                 salario=salario,
                 data_admissao=data_admissao
             ).save()
-            return redirect('funcionario_list')
+            return redirect('listar_funcionarios')
         except (ValueError, KeyError) as e:
             return HttpResponseBadRequest(f"Dados inválidos: {e}")
     return render(request, 'funcionario/form.html', {'action': 'create'})
 
-def funcionario_update(request, pk):
+def atualizar_funcionario(request, pk):
     funcionario = get_object_or_404(Funcionario, id=pk)
+    try:
+        # MongoEngine aceita string hex e converte para ObjectId internamente
+        funcionario = Funcionario.objects.get(id=pk)
+    except (DoesNotExist, InvalidQueryError):
+        # Se não encontrar ou ID inválido, redireciona
+        return redirect('listar_funcionarios')
+    
     if request.method == 'POST':
-        try:
-            funcionario.name = request.POST['nome'].strip()
-            funcionario.position = request.POST['cargo'].strip()
-            funcionario.salary = float(request.POST['salario'])
-            funcionario.admission_date = datetime.strptime(request.POST['data_admissao'], '%Y-%m-%d').date()
-            funcionario.save()
-            return redirect('funcionario_list')
-        except (ValueError, KeyError) as e:
-            return HttpResponseBadRequest(f"Erro ao atualizar: {e}")
-    return render(request, 'funcionario/form.html', {'action': 'update', 'funcionario': funcionario})
+        # ... lógica de atualização ...
+        funcionario.save()
+        return redirect('listar_funcionarios')
+    
+    return render(request, 'funcionario/form.html', {'funcionario': funcionario})
 
-def funcionario_delete(request, pk):
-    funcionario = get_object_or_404(Funcionario, id=pk)
-    funcionario.delete()
-    return redirect('funcionario_list')
+def remover_funcionario(request, pk):
+    """Remove um funcionário pelo ID (ObjectId do MongoDB)"""
+    if request.method != 'POST':
+        # Segurança: só permite DELETE via POST
+        return redirect('listar_funcionarios')
+    
+    try:
+        # ✅ Busca nativa do MongoEngine (não usa get_object_or_404)
+        funcionario = Funcionario.objects.get(id=pk)
+        funcionario.delete()
+    except (DoesNotExist, InvalidQueryError):
+        # Se não encontrar ou ID inválido, apenas redireciona
+        pass
+    except Exception as e:
+        # Opcional: logar erro para debug
+        print(f"Erro ao remover: {e}")
+    
+    return redirect('listar_funcionarios')

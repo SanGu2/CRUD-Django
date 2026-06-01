@@ -61,7 +61,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug'
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -78,15 +78,11 @@ WSGI_APPLICATION = 'funcionarios_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django_mongodb',
-        'NAME': 'funcionarios_db',
-        'HOST': 'mongodb+srv://localhost:bankofdates@cluster0.neeqr7a.mongodb.net/?appName=Cluster0',
-        'OPTIONS': {
-            'retryWrites': True,
-            'w': 'majority',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-}
+
 
 
 # Password validation
@@ -108,7 +104,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 #Conexão com mongoDB (usado pelo Mongoengine)
-mongoengine.connect(db='funcionarios_db', host='localhost', port=27017)
+MONGODB_URI = "mongodb+srv://localhost:bankofdates@cluster0.neeqr7a.mongodb.net/?appName=Cluster0"
+
+if MONGODB_URI:
+    mongoengine.connect(host=MONGODB_URI)
 
 
 # Internationalization
@@ -116,7 +115,7 @@ mongoengine.connect(db='funcionarios_db', host='localhost', port=27017)
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'America/Sao Paulo'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 

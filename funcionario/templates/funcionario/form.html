@@ -6,12 +6,12 @@
   <h1>{% if action == 'create' %}Novo{% else %}Editar{% endif %} Funcionário</h1>
   <form method="POST">
     {% csrf_token %}
-    <label>Nome:<br><input type="text" name="nome" value="{{ funcionario.name|default:'' }}" required></label><br><br>
+    <label>Nome:<br><input type="text" name="nome" value="{{ funcionario.nome|default:'' }}" required></label><br><br>
     <label>Cargo:<br><input type="text" name="cargo" value="{{ funcionario.cargo|default:'' }}" required></label><br><br>
     <label>Salário:<br><input type="number" step="0.01" name="salario" value="{{ funcionario.salario|default:'' }}" required></label><br><br>
     <label>Data de Admissão:<br><input type="date" name="data_admissao" value="{{ funcionario.data_admissao|date:'Y-m-d'|default:'' }}" required></label><br><br>
     <button type="submit">Salvar</button>
-    <a href="{% url 'funcionario_list' %}">Cancelar</a>
+    <a href="{% url 'listar_funcionarios' %}">Cancelar</a>
   </form>
 </body>
 </html>
